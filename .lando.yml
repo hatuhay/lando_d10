@@ -1,0 +1,37 @@
+name: landod10
+recipe: drupal10
+config:
+  webroot: web
+services:
+  node:
+    type: node:16
+    ssl: false
+    globals:
+      gulp-cli: latest
+tooling:
+  "npm":
+    service: node
+    cmd: "npm"
+    description: "Ex: lando npm <command>"
+  gulp:
+    service: node
+    cmd: "gulp"
+  drush:
+    env:
+      DRUSH_OPTIONS_URI: "http://landod10.lndo.site"
+  theme:subtheme:
+    service: appserver
+    description: Create a subtheme from Boostrap Barrio SASS
+    cmd:
+      - cd /app/web/themes/contrib/bootstrap_sass && chmod +x scripts/create_subtheme.sh && ./scripts/create_subtheme.sh
+  theme:install:
+    service: node
+    description: Runs drush uli
+    dir: /app/web/themes/custom/custom
+    cmd:
+      - npm install
+  theme:build:
+    service: node
+    description: Runs drush uli
+    cmd:
+      - cd /app/web/themes/custom/custom && node_modules/.bin/gulp
